@@ -1,16 +1,15 @@
 let WHEEL_SCALE = 1;
 let WEDGE_SCALE = .97;
 let TEXT_SCALE = .85;
-let NUM_WEDGES = 11;
+let NUM_WEDGES = 8;
 let WEDGE_ANGLE = 2 * Math.PI / NUM_WEDGES;
-let COLORS = ["red", "orange", "yellow", "green", "blue", "purple"];
-let TEXT = ["r", "o", "y", "g", "b", "v"];
-let ANIM_TIME = 10; // Time in seconds
+let COLORS = ["#B5DFCF", "#F7B5D2", "#B19ACA", "#FFFAC2"];
+let ANIM_TIME = 5; // Time in seconds
 let WHEEL_ACCEL = 100 // Acceleration in radians/sec^2
 let BASE_WHEEL_DECEL = .1; // Deceleration in radians/sec^2
 let WHEEL_ACCEL_TIME = .3; // Time in seconds
 let WHEEL_DECEL_TIME = WHEEL_ACCEL_TIME - ANIM_TIME;
-let FULL_ROTATIONS = 4;
+let FULL_ROTATIONS = 2;
 
 var width;
 var height;
@@ -29,9 +28,11 @@ var canvas = document.getElementById("spinnerCanvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 var canvasCtx = canvas.getContext("2d");
-canvasCtx.font = "30px Arial";
+canvasCtx.font = "300% Arial";
 canvasCtx.textAlign = "center";
 canvasCtx.textBaseline = "middle";
+
+var container = document.getElementById("container");
 
 window.addEventListener("resize", (event) => {
   updateDimensions();
@@ -64,7 +65,6 @@ function updateDimensions() {
   var minDim = Math.min(width, height);
   wheelRad = minDim * WHEEL_SCALE / 2;
   wedgeRad = minDim * WEDGE_SCALE / 2;
-  textRad = minDim * TEXT_SCALE / 2;
 
   centerX = width / 2;
   centerY = height / 2;
@@ -95,7 +95,7 @@ function updateRotation() {
     // Calculate final wedge
     let normedFinalTopAngle = mod(-finalWedgeRotation - Math.PI/2, 2*Math.PI);
     let idx = mod(Math.floor(normedFinalTopAngle / WEDGE_ANGLE), COLORS.length);
-    alert("You got " + TEXT[idx] + "!");
+    document.body.style.backgroundColor = COLORS[idx];
 
     return finalWedgeRotation - initialWedgeRotation;
   }
@@ -121,17 +121,15 @@ function drawWedges() {
   for (let i = 0; i < NUM_WEDGES; i++) {
     var idx = i % COLORS.length;
     var color = COLORS[idx];
-    var text = TEXT[idx]
     drawWedge(
       wedgeRotation + i * WEDGE_ANGLE,
       wedgeRotation + (i + 1) * WEDGE_ANGLE,
       color,
-      text
     );
   }
 }
 
-function drawWedge(startAngle, endAngle, color, text) {
+function drawWedge(startAngle, endAngle, color) {
   canvasCtx.beginPath();
   canvasCtx.moveTo(centerX, centerY);
   canvasCtx.lineTo(
@@ -141,12 +139,6 @@ function drawWedge(startAngle, endAngle, color, text) {
   canvasCtx.arc(centerX, centerY, wedgeRad, startAngle, endAngle);
   canvasCtx.fillStyle = color;
   canvasCtx.fill();
-  canvasCtx.fillStyle = "black";
-  canvasCtx.fillText(
-    text,
-    centerX + textRad * Math.cos(startAngle + WEDGE_ANGLE/2),
-    centerY + textRad * Math.sin(startAngle + WEDGE_ANGLE/2)
-  );
 }
 
 // % doesn't work for negative numbers
