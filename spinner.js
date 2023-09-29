@@ -4,7 +4,8 @@ let TEXT_SCALE = .85;
 let NUM_WEDGES = 8;
 let WEDGE_ANGLE = 2 * Math.PI / NUM_WEDGES;
 let COLORS = ["#B5DFCF", "#F7B5D2", "#B19ACA", "#FFFAC2"];
-let ANIM_TIME = 5; // Time in seconds
+let BORDER_COLOR = "white";
+let ANIM_TIME = 3; // Time in seconds
 let WHEEL_ACCEL = 100 // Acceleration in radians/sec^2
 let BASE_WHEEL_DECEL = .1; // Deceleration in radians/sec^2
 let WHEEL_ACCEL_TIME = .3; // Time in seconds
@@ -24,6 +25,8 @@ var spinning = false;
 var lastSpunTime;
 var timeSinceLastSpin = 0;
 
+document.body.style.backgroundColor = "#66B4F0";
+
 var canvas = document.getElementById("spinnerCanvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -33,6 +36,7 @@ canvasCtx.textAlign = "center";
 canvasCtx.textBaseline = "middle";
 
 var container = document.getElementById("container");
+var button = document.getElementById("goButton");
 
 window.addEventListener("resize", (event) => {
   updateDimensions();
@@ -43,7 +47,8 @@ mainLoop();
 
 function spin() {
   initialWedgeRotation = wedgeRotation;
-  finalWedgeRotation = Math.random() * 2*Math.PI;
+  finalWedgeRotation = Math.floor(Math.random() * NUM_WEDGES) + .5;
+  finalWedgeRotation *= 2*Math.PI / NUM_WEDGES;
   spinning = true;
   // TODO: Update lastSpunTime
   timeSinceLastSpin = 0;
@@ -108,12 +113,13 @@ function updateRotation() {
 function render() {
   drawWheel();
   drawWedges();
+  drawArrow();
 }
 
 function drawWheel() {
   canvasCtx.beginPath();
   canvasCtx.arc(centerX, centerY, wheelRad, 0, 2 * Math.PI);
-  canvasCtx.fillStyle = "black"
+  canvasCtx.fillStyle = BORDER_COLOR;
   canvasCtx.fill();
 }
 
@@ -138,6 +144,15 @@ function drawWedge(startAngle, endAngle, color) {
   );
   canvasCtx.arc(centerX, centerY, wedgeRad, startAngle, endAngle);
   canvasCtx.fillStyle = color;
+  canvasCtx.fill();
+}
+
+function drawArrow() {
+  canvasCtx.beginPath();
+  canvasCtx.moveTo(centerX - 20, centerY - wheelRad);
+  canvasCtx.lineTo(centerX + 20, centerY - wheelRad);
+  canvasCtx.lineTo(centerX, centerY - wedgeRad + 40);
+  canvasCtx.fillStyle = BORDER_COLOR;
   canvasCtx.fill();
 }
 

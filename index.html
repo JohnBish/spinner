@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Spinner</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="./style.css" rel="stylesheet">
   </head>
   <body>
     <div class="container-sm text-center" id="container">
-      <h1>Spinner</h1>
-      <canvas id="spinnerCanvas" style="width:100%; height:100%"></canvas>
-      <button type="button" class="btn btn-primary" onclick="spin()">Go</button>
+      <img src="./candyland.png" style="width:40%; position: absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; top: 0;"></img>
+      <div style="position: relative; margin-top: 15%; margin-left: auto; margin-right: auto; left: 0; right: 0">
+        <canvas id="spinnerCanvas" style="width:100%; height:100%"></canvas>
+        <img src="./button.png" class="shake" style="position: absolute; margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto; left: 0; right: 0; top: 0; bottom: 0;" id="goButton" onclick="spin()">
+      </div>
     <div>
     <script src="spinner.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
