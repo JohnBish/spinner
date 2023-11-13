@@ -1,9 +1,33 @@
 let WHEEL_SCALE = 1;
 let WEDGE_SCALE = .97;
 let TEXT_SCALE = .85;
+let ICON_RAD = .7;
+let ICON_SCALE = .4;
 let NUM_WEDGES = 8;
 let WEDGE_ANGLE = 2 * Math.PI / NUM_WEDGES;
-let COLORS = ["#B5DFCF", "#F7B5D2", "#B19ACA", "#FFFAC2"];
+let CHECKPOINT_COLOR = "#94D9F8";
+let COLORS = [
+    "#B5DFCF", CHECKPOINT_COLOR,
+    "#F7B5D2", CHECKPOINT_COLOR,
+    "#B19ACA", CHECKPOINT_COLOR,
+    "#FFFAC2", CHECKPOINT_COLOR
+];
+let SPRITE_PROMISES = [
+    loadSprite("./assets/castle.png"),
+    loadSprite("./assets/lollipop.png"),
+    loadSprite("./assets/gumdrop.png"),
+    loadSprite("./assets/ice_cream.png"),
+];
+let WEDGE_SPRITE_PROMISES = [
+    null,
+    SPRITE_PROMISES[0],
+    null,
+    SPRITE_PROMISES[1],
+    null,
+    SPRITE_PROMISES[2],
+    null,
+    SPRITE_PROMISES[3]
+]
 let BORDER_COLOR = "white";
 let ANIM_TIME = 3; // Time in seconds
 let WHEEL_ACCEL = 100 // Acceleration in radians/sec^2
@@ -45,6 +69,14 @@ window.addEventListener("resize", (event) => {
 
 mainLoop();
 
+function mainLoop() {
+  updateDimensions();
+  updateRotation();
+  render();
+  timeSinceLastSpin += 1/60; // TODO: Get actual time
+  requestAnimationFrame(mainLoop);
+}
+
 function spin() {
   initialWedgeRotation = wedgeRotation;
   finalWedgeRotation = Math.floor(Math.random() * NUM_WEDGES) + .5;
@@ -54,16 +86,9 @@ function spin() {
   timeSinceLastSpin = 0;
 }
 
-function mainLoop() {
-  updateDimensions();
-  updateRotation();
-  render();
-  timeSinceLastSpin += 1/60; // TODO: Get actual time
-  requestAnimationFrame(mainLoop);
-}
-
 function updateDimensions() {
-  // TODO: Use a reference
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   width = canvas.width;
   height = canvas.height;
 
@@ -110,6 +135,15 @@ function updateRotation() {
   }
 }
 
+function loadSprite(src) {
+  return new Promise((resolve, reject) => {
+    let image = new Image();
+    image.onload = () => resolve(createImageBitmap(image));
+    image.onerror = reject;
+    image.src = src;
+  });
+}
+
 function render() {
   drawWheel();
   drawWedges();
@@ -131,11 +165,12 @@ function drawWedges() {
       wedgeRotation + i * WEDGE_ANGLE,
       wedgeRotation + (i + 1) * WEDGE_ANGLE,
       color,
+      icon=WEDGE_SPRITE_PROMISES[i]
     );
   }
 }
 
-function drawWedge(startAngle, endAngle, color) {
+function drawWedge(startAngle, endAngle, color, icon=null) {
   canvasCtx.beginPath();
   canvasCtx.moveTo(centerX, centerY);
   canvasCtx.lineTo(
@@ -145,6 +180,21 @@ function drawWedge(startAngle, endAngle, color) {
   canvasCtx.arc(centerX, centerY, wedgeRad, startAngle, endAngle);
   canvasCtx.fillStyle = color;
   canvasCtx.fill();
+
+  if (icon) {
+    icon.then((bmp) => {
+      let midAngle = (startAngle + endAngle) / 2;
+      let imgX = centerX + ICON_RAD * wedgeRad * Math.cos(midAngle);
+      let imgY = centerY + ICON_RAD * wedgeRad * Math.sin(midAngle);
+      let imgW = WEDGE_ANGLE * ICON_RAD * ICON_SCALE * wedgeRad;
+      let imgH = bmp.height * (imgW / bmp.width);
+      canvasCtx.translate(imgX, imgY);
+      canvasCtx.rotate(midAngle + Math.PI / 2);
+      canvasCtx.drawImage(bmp, -imgW/2, -imgH/2, imgW, imgH);
+      canvasCtx.rotate(- (midAngle + Math.PI / 2));
+      canvasCtx.translate(-imgX, -imgY);
+    })
+  }
 }
 
 function drawArrow() {
