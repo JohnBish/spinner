@@ -12,21 +12,15 @@ let COLORS = [
     "#B19ACA", CHECKPOINT_COLOR,
     "#FFFAC2", CHECKPOINT_COLOR
 ];
-let SPRITE_PROMISES = [
-    loadSprite("./assets/castle.png"),
-    loadSprite("./assets/lollipop.png"),
-    loadSprite("./assets/gumdrop.png"),
-    loadSprite("./assets/ice_cream.png"),
-];
 let WEDGE_SPRITE_PROMISES = [
     null,
-    SPRITE_PROMISES[0],
+    loadSprite("./assets/castle.png"),
     null,
-    SPRITE_PROMISES[1],
+    loadSprite("./assets/lollipop.png"),
     null,
-    SPRITE_PROMISES[2],
+    loadSprite("./assets/gumdrop.png"),
     null,
-    SPRITE_PROMISES[3]
+    loadSprite("./assets/ice_cream.png")
 ]
 let BORDER_COLOR = "white";
 let ANIM_TIME = 3; // Time in seconds
