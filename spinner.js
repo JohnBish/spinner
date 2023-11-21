@@ -42,6 +42,8 @@ var finalWedgeRotation; // In radians
 var spinning = false;
 var lastSpunTime;
 var timeSinceLastSpin = 0;
+var then = 0;
+var now = 0;
 
 document.body.style.backgroundColor = "#66B4F0";
 
@@ -64,10 +66,15 @@ window.addEventListener("resize", (event) => {
 mainLoop();
 
 function mainLoop() {
+  now = Date.now();
+  elapsed = now - then;
+
   updateDimensions();
   updateRotation();
   render();
-  timeSinceLastSpin += 1/60; // TODO: Get actual time
+  timeSinceLastSpin += elapsed/1000;
+
+  then = Date.now();
   requestAnimationFrame(mainLoop);
 }
 
